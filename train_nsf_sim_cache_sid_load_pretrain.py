@@ -7,7 +7,7 @@ os.environ["CUDA_VISIBLE_DEVICES"]=hps.gpus.replace("-",",")
 n_gpus=len(hps.gpus.split("-"))
 from random import shuffle
 import traceback,json,argparse,itertools,math,torch,pdb
-torch.backends.cudnn.deterministic = True
+torch.backends.cudnn.deterministic = False
 torch.backends.cudnn.benchmark = False
 from torch import nn, optim
 from torch.nn import functional as F
@@ -68,7 +68,7 @@ def run(rank, n_gpus, hps):
     else:train_dataset = TextAudioLoader(hps.data.training_files, hps.data)
     train_sampler = DistributedBucketSampler(
         train_dataset,
-        hps.train.batch_size,
+        hps.train.batch_size*n_gpus,
         # [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1200,1400],  # 16s
         [100, 200, 300, 400, 500, 600, 700, 800, 900],  # 16s
         num_replicas=n_gpus,
@@ -311,7 +311,7 @@ def train_and_evaluate(
                     )
             global_step += 1
         # if global_step % hps.train.eval_interval == 0:
-        if epoch % hps.save_every_epoch == 0:
+        if epoch % hps.save_every_epoch == 0 and rank == 0:
             if(hps.if_latest==0):
                 utils.save_checkpoint(
                     net_g,
@@ -466,7 +466,7 @@ def train_and_evaluate(
                     )
             global_step += 1
         # if global_step % hps.train.eval_interval == 0:
-        if epoch % hps.save_every_epoch == 0:
+        if epoch % hps.save_every_epoch == 0 and rank == 0:
             if(hps.if_latest==0):
                 utils.save_checkpoint(
                     net_g,

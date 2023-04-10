@@ -9,7 +9,7 @@ import faiss
 ncpu=cpu_count()
 ngpu=torch.cuda.device_count()
 gpu_infos=[]
-if(torch.cuda.is_available()==False or ngpu==0):if_gpu_ok=False
+if((not torch.cuda.is_available()) or ngpu==0):if_gpu_ok=False
 else:
     if_gpu_ok = False
     for i in range(ngpu):
@@ -79,7 +79,7 @@ def vc_single(sid,input_audio,f0_up_key,f0_file,f0_method,file_index,file_big_np
         if(hubert_model==None):load_hubert()
         if_f0 = cpt.get("f0", 1)
         audio_opt=vc.pipeline(hubert_model,net_g,sid,audio,times,f0_up_key,f0_method,file_index,file_big_npy,index_rate,if_f0,f0_file=f0_file)
-        print(times)
+        print("npy: ", times[0], "s, f0:", times[1], "s, infer: ", times[2], "s", sep='')
         return "Success", (tgt_sr, audio_opt)
     except:
         info=traceback.format_exc()
@@ -140,7 +140,7 @@ def uvr(model_name,inp_root,save_root_vocal,paths,save_root_ins):
         except:
             traceback.print_exc()
         print("clean_empty_cache")
-        torch.cuda.empty_cache()
+        if torch.cuda.is_available(): torch.cuda.empty_cache()
     yield "\n".join(infos)
 
 #一个选项卡全局只能有一个音色
@@ -152,7 +152,7 @@ def get_vc(sid):
             print("clean_empty_cache")
             del net_g, n_spk, vc, hubert_model,tgt_sr#,cpt
             hubert_model = net_g=n_spk=vc=hubert_model=tgt_sr=None
-            torch.cuda.empty_cache()
+            if torch.cuda.is_available(): torch.cuda.empty_cache()
             ###楼下不这么折腾清理不干净
             if_f0 = cpt.get("f0", 1)
             if (if_f0 == 1):
@@ -160,7 +160,7 @@ def get_vc(sid):
             else:
                 net_g = SynthesizerTrnMs256NSFsid_nono(*cpt["config"])
             del net_g,cpt
-            torch.cuda.empty_cache()
+            if torch.cuda.is_available(): torch.cuda.empty_cache()
             cpt=None
         return {"visible": False, "__type__": "update"}
     person = "%s/%s" % (weight_root, sid)
@@ -303,6 +303,10 @@ def click_train(exp_dir1,sr2,if_f0_3,spk_id5,save_epoch10,total_epoch11,batch_si
             opt.append("%s/%s.wav|%s/%s.npy|%s/%s.wav.npy|%s/%s.wav.npy|%s"%(gt_wavs_dir.replace("\\","\\\\"),name,co256_dir.replace("\\","\\\\"),name,f0_dir.replace("\\","\\\\"),name,f0nsf_dir.replace("\\","\\\\"),name,spk_id5))
         else:
             opt.append("%s/%s.wav|%s/%s.npy|%s"%(gt_wavs_dir.replace("\\","\\\\"),name,co256_dir.replace("\\","\\\\"),name,spk_id5))
+    if (if_f0_3 == "是"):
+        opt.append("%s/logs/mute/0_gt_wavs/mute%s.wav|%s/logs/mute/3_feature256/mute.npy|%s/logs/mute/2a_f0/mute.wav.npy|%s/logs/mute/2b-f0nsf/mute.wav.npy|%s"%(now_dir,sr2,now_dir,now_dir,now_dir,spk_id5))
+    else:
+        opt.append("%s/logs/mute/0_gt_wavs/mute%s.wav|%s/logs/mute/2b-f0nsf/mute.wav.npy|%s"%(now_dir,sr2,now_dir,spk_id5))
     with open("%s/filelist.txt"%exp_dir,"w")as f:f.write("\n".join(opt))
     print("write filelist done")
     #生成config#无需生成config
@@ -402,6 +406,10 @@ def train1key(exp_dir1, sr2, if_f0_3, trainset_dir4, spk_id5, gpus6, np7, f0meth
             opt.append("%s/%s.wav|%s/%s.npy|%s/%s.wav.npy|%s/%s.wav.npy|%s"%(gt_wavs_dir.replace("\\","\\\\"),name,co256_dir.replace("\\","\\\\"),name,f0_dir.replace("\\","\\\\"),name,f0nsf_dir.replace("\\","\\\\"),name,spk_id5))
         else:
             opt.append("%s/%s.wav|%s/%s.npy|%s"%(gt_wavs_dir.replace("\\","\\\\"),name,co256_dir.replace("\\","\\\\"),name,spk_id5))
+    if (if_f0_3 == "是"):
+        opt.append("%s/logs/mute/0_gt_wavs/mute%s.wav|%s/logs/mute/3_feature256/mute.npy|%s/logs/mute/2a_f0/mute.wav.npy|%s/logs/mute/2b-f0nsf/mute.wav.npy|%s"%(now_dir,sr2,now_dir,now_dir,now_dir,spk_id5))
+    else:
+        opt.append("%s/logs/mute/0_gt_wavs/mute%s.wav|%s/logs/mute/2b-f0nsf/mute.wav.npy|%s"%(now_dir,sr2,now_dir,spk_id5))
     with open("%s/filelist.txt"%exp_dir,"w")as f:f.write("\n".join(opt))
     yield get_info_str("write filelist done")
     if gpus16:

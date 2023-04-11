@@ -1,19 +1,27 @@
-# Retrieval-based-Voice-Conversion-WebUI
+<div align="center">
+
+<h1>Retrieval-based-Voice-Conversion-WebUI</h1>
+An easy-to-use SVC framework based on VITS.<br><br>
 
 [![madewithlove](https://forthebadge.com/images/badges/built-with-love.svg)](https://github.com/liujing04/Retrieval-based-Voice-Conversion-WebUI)
-
+  
+<img src="https://counter.seku.su/cmoe?name=rvc&theme=r34" /><br>
+  
 [![Open In Colab](https://img.shields.io/badge/Colab-F9AB00?style=for-the-badge&logo=googlecolab&color=525252)](https://colab.research.google.com/github/liujing04/Retrieval-based-Voice-Conversion-WebUI/blob/main/Retrieval_based_Voice_Conversion_WebUI.ipynb)
 [![Licence](https://img.shields.io/github/license/liujing04/Retrieval-based-Voice-Conversion-WebUI?style=for-the-badge)](https://github.com/liujing04/Retrieval-based-Voice-Conversion-WebUI/blob/main/%E4%BD%BF%E7%94%A8%E9%9C%80%E9%81%B5%E5%AE%88%E7%9A%84%E5%8D%8F%E8%AE%AE-LICENSE.txt)
 [![Huggingface](https://img.shields.io/badge/🤗%20-Spaces-blue.svg?style=for-the-badge)](https://huggingface.co/lj1995/VoiceConversionWebUI/tree/main/)
 
-### Realtime Voice Conversion Software using RVC : [w-okada/voice-changer](https://github.com/w-okada/voice-changer)
-------
+</div>
 
-An easy-to-use SVC framework based on VITS.
+------
+[**Changelog**](https://github.com/liujing04/Retrieval-based-Voice-Conversion-WebUI/blob/main/Changelog_CN.md)
 
 [**English**](./README.md) | [**中文简体**](./README_zh_CN.md)
 
 > Check our [Demo Video](https://www.bilibili.com/video/BV1pm4y1z7Gm/) here!
+
+> Realtime Voice Conversion Software using RVC : [w-okada/voice-changer](https://github.com/w-okada/voice-changer)
+
 ## Summary
 This repository has the following features:
 + Using top1 feature model retrieval to reduce tone leakage;
@@ -22,6 +30,7 @@ This repository has the following features:
 + Supporting model fusion to change timbres;
 + Easy-to-use Webui interface;
 + Use the UVR5 model to quickly separate vocals and instruments.
++ The dataset for the pre-training model uses nearly 50 hours of high quality VCTK open source, and high quality licensed song datasets will be added one after another for your use, without worrying about copyright infringement.
 ## Preparing the environment
 We recommend you install the dependencies through poetry.
 
@@ -30,6 +39,10 @@ The following commands need to be executed in the environment of Python version 
 # Install PyTorch-related core dependencies, skip if installed
 # Reference: https://pytorch.org/get-started/locally/
 pip install torch torchvision torchaudio
+
+#For Windows + 30-series Nvidia cards, you need to specify the cuda version corresponding to pytorch according to the experience of https://github.com/liujing04/Retrieval-based-Voice-Conversion-WebUI/issues/21
+
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu117
 
 # Install the Poetry dependency management tool, skip if installed
 # Reference: https://python-poetry.org/docs/#installation

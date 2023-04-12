@@ -17,7 +17,7 @@
 
 [**更新日志**](https://github.com/liujing04/Retrieval-based-Voice-Conversion-WebUI/blob/main/Changelog_CN.md)
 
-[**English**](./README_en.md) | [**中文简体**](./README.md)
+[**English**](./README.en.md) | [**中文简体**](./README.md) | [**日本語**](./README.ja.md)
 
 > 点此查看我们的[演示视频](https://www.bilibili.com/video/BV1pm4y1z7Gm/) !
 
@@ -25,13 +25,13 @@
 
 ## 简介
 本仓库具有以下特点:
-+ 使用top1特征模型检索来杜绝音色泄漏；
++ 通过使用top1检索替换输入源特征为训练集特征来杜绝音色泄漏；
 + 即便在相对较差的显卡上也能快速训练;
-+ 使用少量数据进行训练也能得到较好结果;
-+ 可以通过模型融合来改变音色;
++ 使用少量数据进行训练也能得到较好结果(推荐至少收集10分钟低底噪语音数据);
++ 可以通过模型融合来改变音色(借助ckpt处理选项卡中的ckpt-merge);
 + 简单易用的WebUI界面;
 + 可调用UVR5模型来快速分离人声和伴奏。
-+ 底模训练集使用接近50小时的高质量VCTK开源，后续会陆续加入高质量有授权歌声训练集供大家放心使用。
++ 底模训练集使用接近50小时开源的高质量VCTK，后续会陆续加入高质量有授权歌声训练集训练底模供大家放心使用。
 ## 环境配置
 我们推荐你使用poetry来配置环境。
 
@@ -41,7 +41,7 @@
 # 参考自: https://pytorch.org/get-started/locally/
 pip install torch torchvision torchaudio
 
-如果是win系统+30系显卡，根据https://github.com/liujing04/Retrieval-based-Voice-Conversion-WebUI/issues/21的经验，需要指定pytorch对应的cuda版本
+#如果是win系统+Nvidia Ampere架构(RTX30xx)，根据https://github.com/liujing04/Retrieval-based-Voice-Conversion-WebUI/issues/21的经验，需要指定pytorch对应的cuda版本
 
 pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu117
 

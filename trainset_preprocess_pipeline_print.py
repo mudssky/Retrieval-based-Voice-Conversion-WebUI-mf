@@ -1,4 +1,5 @@
 import sys, os, multiprocessing
+from scipy import signal
 
 now_dir = os.getcwd()
 sys.path.append(now_dir)
@@ -31,13 +32,14 @@ class PreProcess:
     def __init__(self, sr, exp_dir):
         self.slicer = Slicer(
             sr=sr,
-            threshold=-32,
+            threshold=-40,
             min_length=800,
             min_interval=400,
             hop_size=15,
             max_sil_kept=150,
         )
         self.sr = sr
+        self.bh, self.ah = signal.butter(N=5, Wn=48, btype='high', fs=self.sr)
         self.per = 3.7
         self.overlap = 0.3
         self.tail = self.per + self.overlap
@@ -69,6 +71,7 @@ class PreProcess:
     def pipeline(self, path, idx0):
         try:
             audio = load_audio(path, self.sr)
+            audio = signal.filtfilt(self.bh, self.ah, audio)
             idx1 = 0
             for audio in self.slicer.slice(audio):
                 i = 0

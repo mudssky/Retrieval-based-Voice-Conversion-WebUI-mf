@@ -16,7 +16,7 @@ os.makedirs(os.path.join(now_dir, "weights"), exist_ok=True)
 os.environ["TEMP"] = tmp
 warnings.filterwarnings("ignore")
 torch.manual_seed(114514)
-from webui_locale import I18nAuto
+from i18n import I18nAuto
 
 i18n = I18nAuto()
 # 判断是否有能用来训练和加速推理的N卡
@@ -36,6 +36,10 @@ else:
             or "20" in gpu_name
             or "30" in gpu_name
             or "40" in gpu_name
+            or "A2" in gpu_name.upper()
+            or "A3" in gpu_name.upper()
+            or "A4" in gpu_name.upper()
+            or "P4" in gpu_name.upper()
             or "A50" in gpu_name.upper()
             or "70" in gpu_name
             or "80" in gpu_name
@@ -135,6 +139,8 @@ def vc_single(
         if hubert_model == None:
             load_hubert()
         if_f0 = cpt.get("f0", 1)
+        file_index = file_index.strip(" ").strip('"').strip("\n").strip('"').strip(" ").replace("trained","added")#防止小白写错，自动帮他替换掉
+        file_big_npy = file_big_npy.strip(" ").strip('"').strip("\n").strip('"').strip(" ")
         audio_opt = vc.pipeline(
             hubert_model,
             net_g,
@@ -932,7 +938,7 @@ with gr.Blocks() as app:
                             minimum=0,
                             maximum=1,
                             label="检索特征占比",
-                            value=1,
+                            value=0.6,
                             interactive=True,
                         )
                     f0_file = gr.File(label=i18n("F0曲线文件, 可选, 一行一个音高, 代替默认F0及升降调"))

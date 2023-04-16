@@ -1,3 +1,6 @@
+import os,sys
+now_dir = os.getcwd()
+sys.path.append(now_dir)
 import PySimpleGUI as sg
 import sounddevice as sd
 import noisereduce as nr
@@ -9,10 +12,10 @@ import torchaudio.transforms as tat
 
 # import matplotlib.pyplot as plt
 from infer_pack.models import SynthesizerTrnMs256NSFsid, SynthesizerTrnMs256NSFsid_nono
-from webui_locale import I18nAuto
+from i18n import I18nAuto
 
 i18n = I18nAuto()
-
+print(i18n.language_map)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 

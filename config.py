@@ -1,6 +1,4 @@
 import argparse
-import glob
-import sys
 import torch
 from multiprocessing import cpu_count
 
@@ -21,7 +19,8 @@ class Config:
         ) = self.arg_parse()
         self.x_pad, self.x_query, self.x_center, self.x_max = self.device_config()
 
-    def arg_parse(self) -> tuple:
+    @staticmethod
+    def arg_parse() -> tuple:
         parser = argparse.ArgumentParser()
         parser.add_argument("--port", type=int, default=7865, help="Listen port")
         parser.add_argument(
@@ -55,10 +54,11 @@ class Config:
             if (
                 ("16" in self.gpu_name and "V100" not in self.gpu_name.upper())
                 or "P40" in self.gpu_name.upper()
+                or "1060" in self.gpu_name
                 or "1070" in self.gpu_name
                 or "1080" in self.gpu_name
             ):
-                print("16系显卡强制单精度")
+                print("16系/10系显卡和P40强制单精度")
                 self.is_half = False
                 for config_file in ["32k.json", "40k.json", "48k.json"]:
                     with open(f"configs/{config_file}", "r") as f:
@@ -86,10 +86,11 @@ class Config:
         elif torch.backends.mps.is_available():
             print("没有发现支持的N卡, 使用MPS进行推理")
             self.device = "mps"
+            self.is_half = False
         else:
             print("没有发现支持的N卡, 使用CPU进行推理")
             self.device = "cpu"
-            self.is_half = True
+            self.is_half = False
 
         if self.n_cpu == 0:
             self.n_cpu = cpu_count()

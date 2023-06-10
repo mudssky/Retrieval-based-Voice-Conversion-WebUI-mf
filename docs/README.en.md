@@ -56,8 +56,6 @@ poetry install
 ```
 You can also use pip to install the dependencies
 
-**Notice**: `faiss 1.7.2` will raise Segmentation Fault: 11 under `MacOS`, please use `pip install faiss-cpu==1.7.0` if you use pip to install it manually.
-
 ```bash
 pip install -r requirements.txt
 ```
@@ -74,6 +72,10 @@ hubert_base.pt
 ./pretrained 
 
 ./uvr5_weights
+
+If you want to test the v2 version model (the v2 version model has changed the input from the 256 dimensional feature of 9-layer Hubert+final_proj to the 768 dimensional feature of 12-layer Hubert, and has added 3 period discriminators), you will need to download additional features
+
+./pretrained_v2
 
 #If you are using Windows, you may also need this dictionary, skip if FFmpeg is installed
 ffmpeg.exe

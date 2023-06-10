@@ -64,14 +64,6 @@ poetry install
 pip install -r requirements.txt
 ```
 
-**注意**
-1. 英特尔`MacOS`下使用pip安装`faiss 1.7.0`以上版本会导致抛出段错误，在手动安装时，如需安装最新版，请使用`conda`；如只能使用`pip`，请指定使用`1.7.0`版本。
-2. `MacOS`下如`faiss`安装失败，可尝试通过`brew`安装`Swig`
-
-```bash
-brew install swig
-```
-
 ## 其他预模型准备
 RVC需要其他一些预模型来推理和训练。
 
@@ -84,6 +76,10 @@ hubert_base.pt
 ./pretrained 
 
 ./uvr5_weights
+
+想测试v2版本模型的话(v2版本模型将特征从 9层hubert+final_proj的256维输入 变更为 12层hubert的768维输入，并且增加了3个周期鉴别器)，需要额外下载
+
+./pretrained_v2 
 
 #如果你正在使用Windows，则你可能需要这个文件，若ffmpeg和ffprobe已安装则跳过; ubuntu/debian 用户可以通过apt install ffmpeg来安装这2个库
 ./ffmpeg

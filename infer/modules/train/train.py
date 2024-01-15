@@ -99,7 +99,7 @@ def main():
         n_gpus = 1
     if n_gpus < 1:
         # patch to unblock people without gpus. there is probably a better way.
-        logger.warning("NO GPU DETECTED: falling back to CPU - this may take a while")
+        print("NO GPU DETECTED: falling back to CPU - this may take a while")
         n_gpus = 1
     os.environ["MASTER_ADDR"] = "localhost"
     os.environ["MASTER_PORT"] = str(randint(20000, 55555))
@@ -107,11 +107,7 @@ def main():
     for i in range(n_gpus):
         subproc = mp.Process(
             target=run,
-            args=(
-                i,
-                n_gpus,
-                hps,
-            ),
+            args=(i, n_gpus, hps),
         )
         children.append(subproc)
         subproc.start()
@@ -120,7 +116,11 @@ def main():
         children[i].join()
 
 
-def run(rank, n_gpus, hps):
+def run(
+    rank,
+    n_gpus,
+    hps,
+):
     global global_step
     if rank == 0:
         logger = utils.get_logger(hps.model_dir)

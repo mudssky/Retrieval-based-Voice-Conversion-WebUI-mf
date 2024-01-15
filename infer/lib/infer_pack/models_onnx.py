@@ -149,7 +149,7 @@ class ResidualCouplingBlock(nn.Module):
                 x, _ = flow(x, x_mask, g=g, reverse=reverse)
         else:
             for flow in reversed(self.flows):
-                x = flow(x, x_mask, g=g, reverse=reverse)
+                x, _ = flow(x, x_mask, g=g, reverse=reverse)
         return x
 
     def remove_weight_norm(self):
@@ -551,7 +551,7 @@ class SynthesizerTrnMsNSFsidM(nn.Module):
         gin_channels,
         sr,
         version,
-        **kwargs
+        **kwargs,
     ):
         super().__init__()
         if type(sr) == type("strr"):
@@ -621,10 +621,7 @@ class SynthesizerTrnMsNSFsidM(nn.Module):
         self.emb_g = nn.Embedding(self.spk_embed_dim, gin_channels)
         self.speaker_map = None
         logger.debug(
-            "gin_channels: "
-            + gin_channels
-            + ", self.spk_embed_dim: "
-            + self.spk_embed_dim
+            f"gin_channels: {gin_channels}, self.spk_embed_dim: {self.spk_embed_dim}"
         )
 
     def remove_weight_norm(self):

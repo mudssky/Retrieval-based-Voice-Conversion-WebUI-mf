@@ -54,16 +54,10 @@ class VC:
         if sid == "" or sid == []:
             if self.hubert_model is not None:  # 考虑到轮询, 需要加个判断看是否 sid 是由有模型切换到无模型的
                 logger.info("Clean model cache")
-                del (
-                    self.net_g,
-                    self.n_spk,
-                    self.vc,
-                    self.hubert_model,
-                    self.tgt_sr,
-                )  # ,cpt
+                del (self.net_g, self.n_spk, self.hubert_model, self.tgt_sr)  # ,cpt
                 self.hubert_model = (
                     self.net_g
-                ) = self.n_spk = self.vc = self.hubert_model = self.tgt_sr = None
+                ) = self.n_spk = self.hubert_model = self.tgt_sr = None
                 if torch.cuda.is_available():
                     torch.cuda.empty_cache()
                 ###楼下不这么折腾清理不干净
@@ -175,8 +169,8 @@ class VC:
             if self.hubert_model is None:
                 self.hubert_model = load_hubert(self.config)
 
-            file_index = (
-                (
+            if file_index:
+                file_index = (
                     file_index.strip(" ")
                     .strip('"')
                     .strip("\n")
@@ -184,9 +178,10 @@ class VC:
                     .strip(" ")
                     .replace("trained", "added")
                 )
-                if file_index != ""
-                else file_index2
-            )  # 防止小白写错，自动帮他替换掉
+            elif file_index2:
+                file_index = file_index2
+            else:
+                file_index = ""  # 防止小白写错，自动帮他替换掉
 
             audio_opt = self.pipeline.pipeline(
                 self.hubert_model,
